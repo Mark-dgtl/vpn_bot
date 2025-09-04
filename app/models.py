@@ -14,7 +14,8 @@ from app.session import Base
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(BigInteger, primary_key=True) #tg_id
+    id = Column(Integer, primary_key=True)
+    tg_id = Column(BigInteger, nullable=False, unique=True)
     username = Column(String(32), nullable=True)
     first_name = Column(String(64), nullable=False)
     is_active = Column(Boolean, default=False)
@@ -23,6 +24,7 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     last_activity = Column(DateTime(timezone=True), nullable=True)
 
+    notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
     payments = relationship("Payment", back_populates="user", cascade="all, delete-orphan")
     peers = relationship("Peer", back_populates="user", cascade="all, delete-orphan")
     activity_logs = relationship("ActivityLog", back_populates="user", cascade="all, delete-orphan")
@@ -37,11 +39,12 @@ class User(Base):
 class Payment(Base):
     __tablename__ = 'payments'
 
-    id = Column(Integer, primary_key = True)
-    user_id = Column(BigInteger, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    amount = Column(Numeric(10, 2), nullable=False)
+    id = Column(Integer, primary_key=True)
+    tg_id = Column(BigInteger, ForeignKey('users.tg_id', ondelete='CASCADE'), nullable=False)
+    amount = Column(Integer, nullable=False)
+    number_of_months = Column(Integer, nullable=False)
     payment_screenshot = Column(Text, nullable=True)
-    status = Column(String(20), default='pending')
+    status = Column(String(28), default='pending')
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -59,15 +62,15 @@ class Peer(Base):
     __tablename__ = "peers"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(BigInteger, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    tg_id = Column(BigInteger, ForeignKey('users.tg_id', ondelete='CASCADE'), nullable=False)
     vpn_ip_address = Column(INET, nullable=False, unique=True)
     is_active = Column(Boolean, default=True)
     last_handshake = Column(DateTime(timezone=True), nullable=True)
-    create_at = Column(DateTime(timezone=True), server_default=func.now())
-    update_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    # update_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="peers")
-    traffic_stats = relationship("TrafficStat", back_populates="peers", cascade="all, delete-orphan")
+    traffic_stats = relationship("TrafficStat", back_populates="peer", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Peer(id={self.id}, user_id={self.user_id}, vpn_ip='{self.vpn_ip_address}')>"
@@ -108,7 +111,7 @@ class ActivityLog(Base):
     __tablename__ = 'activity_logs'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(BigInteger, ForeignKey("users.id", ondelete='CASCADE'), nullable=True)
+    tg_id = Column(BigInteger, ForeignKey("users.tg_id", ondelete='CASCADE'), nullable=True)
     action = Column(String(50), nullable=False)
     description = Column(Text, nullable=True)
     ip_address = Column(INET, nullable=True)
@@ -124,7 +127,7 @@ class Notification(Base):
     __tablename__ = 'notifications'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(BigInteger, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    tg_id = Column(BigInteger, ForeignKey('users.tg_id', ondelete='CASCADE'), nullable=False)
     type = Column(String(50), nullable=False)
     title = Column(String(255), nullable=False)
     massage = Column(Text, nullable=False)
@@ -140,10 +143,10 @@ class Notification(Base):
 
 # Константы для enum-значений
 class PaymentStatus:
-    PENDING = 'pending'      # Ожидает подтверждения
-    CONFIRMED = 'confirmed'  # Подтвержден администратором
-    REJECTED = 'rejected'    # Отклонен администратором
-    REFUNDED = 'refunded'    # Возвращен пользователю
+    PENDING = 'Ожидает подтверждения'
+    CONFIRMED = 'Подтвержден администратором'
+    REJECTED = 'Отклонен администратором'
+    REFUNDED = 'Возвращен пользователю'
 
 
 class NotificationType:
