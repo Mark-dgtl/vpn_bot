@@ -7,6 +7,7 @@ from app.models import PaymentStatus
 
 
 class NewUserS(BaseModel):
+    tg_id: int
     username: str
     first_name: str
     is_active: bool
@@ -17,9 +18,3 @@ class NewUserS(BaseModel):
 
 class DelUserS(BaseModel):
     tg_id: int
-
-# class NewPaymentsS(BaseModel):
-#     user_id: BigInteger
-#     amount:
-#     payment_screenshot:
-#     status: strint

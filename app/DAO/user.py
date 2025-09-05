@@ -14,7 +14,7 @@ class UserDao(BaseDAO):
 
     @classmethod
     async def add_user(cls, data: NewUserS, db: AsyncSession):
-        new_user = await cls.create(db, data)
+        new_user = await cls.create(data, db)
         return new_user
 
     @classmethod

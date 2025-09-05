@@ -14,8 +14,8 @@ from app.session import Base
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
-    tg_id = Column(BigInteger, nullable=False, unique=True)
+    # id = Column(Integer, primary_key=True)
+    tg_id = Column(BigInteger, nullable=False, primary_key=True)
     username = Column(String(32), nullable=True)
     first_name = Column(String(64), nullable=False)
     is_active = Column(Boolean, default=False)

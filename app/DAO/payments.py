@@ -20,6 +20,6 @@ class PaymentDao(BaseDAO):
     @classmethod
     async def get_list_payments_by_status(cls, status: str, db: AsyncSession):
         query = select(cls.model).filter_by(status=status)
-        result = db.execute(query)
+        result = await db.execute(query)
         return result.scalars().all()
 
