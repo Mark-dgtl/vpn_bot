@@ -43,8 +43,8 @@ class BaseDAO:
         return result.scalars().first()
 
     @classmethod
-    async def delete(cls, obj_in: BaseModel, db: AsyncSession) -> int:
-        stmt = delete(cls.model).filter_by(**obj_in.model_dump())
+    async def delete(cls, id: int, db: AsyncSession) -> int:
+        stmt = delete(cls.model).filter_by(tg_id=id)
         result = await db.execute(stmt)
         await db.commit()
         return result.rowcount

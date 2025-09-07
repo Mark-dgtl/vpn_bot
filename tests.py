@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 from app.models import Base, Payment
-from app.DAO.payments import PaymentDao
+from app.dao.payments import PaymentDao
 from pydantic import BaseModel
 
 

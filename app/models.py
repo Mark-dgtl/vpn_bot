@@ -29,7 +29,7 @@ class User(Base):
     peers = relationship("Peer", back_populates="user", cascade="all, delete-orphan")
     activity_logs = relationship("ActivityLog", back_populates="user", cascade="all, delete-orphan")
 
-    @property
+    @classmethod
     def is_subscription_active(self) -> bool:
         if not self.subscription_end_date:
             return False
@@ -40,7 +40,7 @@ class Payment(Base):
     __tablename__ = 'payments'
 
     id = Column(Integer, primary_key=True)
-    tg_id = Column(BigInteger, ForeignKey('users.tg_id', ondelete='CASCADE'), nullable=False)
+    tg_id = Column(Integer, ForeignKey('users.tg_id', ondelete='CASCADE'), nullable=False)
     amount = Column(Integer, nullable=False)
     number_of_months = Column(Integer, nullable=False)
     payment_screenshot = Column(Text, nullable=True)

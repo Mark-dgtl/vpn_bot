@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.DAO.user import UserDao
+from app.dao.user import UserDao
 from app.session import get_db
 from app.shemas import NewUserS
+from app.routers import user
+from app.routers import payment
 
 
 app = FastAPI()
 
 
-@app.post("/new_user")
-async def add_user(data: NewUserS, db: AsyncSession = Depends(get_db)):
-    return await UserDao.create(data, db)
+app.include_router(user.router)
+app.include_router(payment.router)

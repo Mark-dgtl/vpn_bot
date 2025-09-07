@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from sqlalchemy import BigInteger
-
 from app.models import PaymentStatus
 
 
@@ -18,3 +17,10 @@ class NewUserS(BaseModel):
 
 class DelUserS(BaseModel):
     tg_id: int
+
+class NewPaymentS(BaseModel):
+    tg_id: int
+    amount: int
+    number_of_months: int
+    payment_screenshot: str
+    status: str
