@@ -28,7 +28,7 @@ class Order:
         self,
         order_id: str,
         user_id: int,
-        plan_id: str,
+        plan_name: str,
         amount: float,
         status: str,  # "created", "paid", "canceled"
         created_at: datetime,
@@ -36,7 +36,7 @@ class Order:
     ):
         self.order_id = order_id
         self.user_id = user_id
-        self.plan_id = plan_id
+        self.plan_id = plan_name
         self.amount = amount
         self.status = status
         self.created_at = created_at
